@@ -1,12 +1,6 @@
 # Tic Tac Toe
 # Reference: With modification from http://inventwithpython.com/chapter10.html.
 
-# TODOs:
-# 1. Find all TODO items and see whether you can improve the code.
-#    In most cases (if not all), you can make them more readable/modular.
-# 2. Add/fix function's docstrings (use """ insted of # for function's header
-#    comments)
-
 import random
 
 board_size = 10
@@ -144,25 +138,21 @@ def is_board_full(board):
             return False
     return True
 
-def is_game_playing(given_turn, given_board, given_play_letter, given_comp_letter):
-    """See whether the game is playing by:
-        Checking if there is a winner,
-        Check whether there is a tie"""
-    player_has_won = is_winner(given_board, given_play_letter)
-    computer_has_won = is_winner(given_board, given_comp_letter)
-    tie_game = is_board_full(given_board)
-    # Check if there is a winner, the game would end if there is one
-    # if either of the players is_winner returns true, the game has ended due to a winner
-    if player_has_won or computer_has_won:
-        draw_board(given_board)
-        if given_turn == 'player':
-            print('Hooray! You have won the game!') # If its the player's turn
+def is_game_playing(new_turn, this_board, player_letter, computer_letter):
+    """Checks current game if its still playing, a winner, or tied game"""
+    player_won = is_winner(this_board, player_letter)
+    computer_won = is_winner(this_board, computer_letter)
+    tied = is_board_full(this_board)
+
+    if player_won or computer_won:
+        draw_board(this_board)
+        if new_turn == 'player':
+            print('Nice! You won the game!')
         else:
-            print('The computer has beaten you! You Lose.') # If its the computer's turn
+            print('The computer won! You lost')
         return False
     if tie_game:
-        # There is a tie so the game will end
-        draw_board(given_board) <<---- Forgot to put this in
+        draw_board(this_board)
         print('The game is a tie!')
         return False
     return True
@@ -180,28 +170,19 @@ def computer_turn(comp_board, play_letter, comp_letter):
 
 print('Welcome to Tic Tac Toe!')
 
-# TODO: The following mega code block is a huge hairy monster. Break it down
-# into smaller methods. Use TODO s and the comment above each section as a guide
-# for refactoring.
-
 while True:
-    # Reset the board
     board_size = 10
-    # Stored 10 inside of board_size
-    the_board = [' '] * board_size # Refactor the magic number in this line (and all of the occurrences of 10 thare are conceptually the same.)
+    the_board = [' '] * board_size
     player_letter, computer_letter = input_player_letter()
     turn = who_goes_first()
     print('The ' + turn + ' will go first.')
-    while True: # Usually (not always), loops (or their content) are good candidates to be extracted into their own function.
-    #             Use a meaningful name for the function you choose.
-        # Player's turn.
+    while True:
         if turn == 'player':
             player_turn(the_board, player_letter, computer_letter)
             if is_game_playing(turn, the_board, player_letter, computer_letter):
                 turn = 'computer'
             else:
                 break
-        # Computer's turn.
         else:
             computer_turn(the_board, player_letter, computer_letter)
             if is_game_playing(turn, the_board, player_letter, computer_letter):
